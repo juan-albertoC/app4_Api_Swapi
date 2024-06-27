@@ -13,7 +13,7 @@ import java.net.http.HttpResponse;
 
 public class ConsultaPelicula {
 
-    Pelicula buscaPelicula(int numeroDePelicula){   //nombre del metodo es buscaPelicula() con parametros entero para generar una URL, que va adevolver una Pelicula
+    public Pelicula buscaPelicula(int numeroDePelicula){   //nombre del metodo es buscaPelicula() con parametros entero para generar una URL, que va adevolver una Pelicula
 
         //Crear propia URI generada a partir de nueva dirección proporcionada por la API SWAPI
 
@@ -27,15 +27,18 @@ public class ConsultaPelicula {
         //------------------------------------------------------------------------
 
         //-------------------Response desde javadoc 17 jdk------------------------HttpResponse<String> response = client  se cambio tras el try catch
-        HttpResponse<String> response = null;
+        //HttpResponse<String> response = null;
+
         try {
-            response = client
+            HttpResponse<String> response = client
                     .send(request, HttpResponse.BodyHandlers.ofString());
-        } catch (IOException | InterruptedException  e) {                        //juntar excepciones con | pipe
-            throw new RuntimeException(e);
+            //colocar el return dentro del try en caso que response sea null habra problemas
+            return new Gson().fromJson(response.body(), Pelicula.class);
+        } catch (Exception  e) {                        //ahora solo con Exception pero anteriormente juntar excepciones con | pipe, IOException | InterruptedException
+            throw new RuntimeException("No encontre esa pelicula"); //ahora hay mensaje, anteriormente solo letra e
         }
         //------------------------------------------------------------------------
-        return new Gson().fromJson(response.body(), Pelicula.class);
+        //aqui estaba el try
     }
 
 }
